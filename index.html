@@ -497,26 +497,41 @@ function playLevelUp() {
 // ════════════════════════════════════════════
 //  YouTube
 // ════════════════════════════════════════════
-let ytPlayer = null, ytReady = false;
+let ytPlayer = null, ytReady = false, ytPending = null;
+
 window.onYouTubeIframeAPIReady = function() {
-  ytReady = true;
   ytPlayer = new YT.Player('yt-player', {
     height:'1', width:'1',
-    playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1 },
-    events:{ onReady:()=>{}, onError:()=>{} }
+    playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1, enablejsapi:1 },
+    events:{
+      onReady: function() {
+        ytReady = true;
+        if (ytPending) { _doPlay(ytPending); ytPending = null; }
+      },
+      onError: function() {}
+    }
   });
 };
-function loadYT() {
-  if (document.getElementById('yt-script')) return;
+
+// Load API as soon as the page opens
+(function() {
   const t = document.createElement('script');
   t.id = 'yt-script'; t.src = 'https://www.youtube.com/iframe_api';
   document.head.appendChild(t);
+})();
+
+function _doPlay(s) {
+  ytPlayer.loadVideoById({ videoId: s.ytId, startSeconds: s.startSec || 0 });
 }
 function playSong(s) {
-  if (ytPlayer && ytReady && ytPlayer.loadVideoById)
-    ytPlayer.loadVideoById({ videoId: s.ytId, startSeconds: s.startSec || 0 });
+  if (ytReady && ytPlayer && ytPlayer.loadVideoById) {
+    _doPlay(s);
+  } else {
+    ytPending = s; // play once ready
+  }
 }
 function stopSong() {
+  ytPending = null;
   if (ytPlayer && ytReady && ytPlayer.stopVideo) ytPlayer.stopVideo();
 }
 
@@ -546,7 +561,6 @@ function shuffle(a) {
 }
 
 function startSongGame(type) {
-  loadYT();
   gameType = type;
   queue = shuffle(type === 'song_image' ? SONGS_IMAGE : SONGS_COMPLETE).slice(0, ROUNDS);
   curIdx = 0; score = 0; results = [];
