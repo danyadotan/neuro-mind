@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>משחק הזיכרונות 🎵</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #FFF9E6 0%, #FFF0D4 100%);
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  direction: rtl;
+}
+
+.screen { display: none; width: 100%; max-width: 700px; padding: 24px; text-align: center; }
+.screen.active { display: flex; flex-direction: column; align-items: center; }
+
+/* ── בית ── */
+#screen-home { gap: 18px; }
+#screen-home h1 { font-size: 2.6rem; color: #D45B00; line-height: 1.2; }
+#screen-home .tagline { font-size: 1.2rem; color: #8A6030; margin-bottom: 4px; }
+
+.game-cards { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+
+.game-card {
+  background: white;
+  border-radius: 22px;
+  padding: 20px 22px;
+  display: flex; align-items: center; gap: 16px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-align: right;
+  position: relative;
+}
+.game-card:hover  { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+.game-card:active { transform: scale(0.98); }
+.game-card.free-card   { border-color: #FFD580; }
+.game-card.locked-card { border-color: #E0E0E0; opacity: 0.85; }
+
+.game-card .card-icon { font-size: 3rem; flex-shrink: 0; }
+.game-card .card-body { flex: 1; }
+.game-card .card-title { font-size: 1.4rem; font-weight: bold; color: #3A2400; margin-bottom: 3px; }
+.game-card .card-desc  { font-size: 0.95rem; color: #8A6030; }
+
+.badge {
+  font-size: 0.8rem; font-weight: bold; padding: 4px 10px;
+  border-radius: 30px; flex-shrink: 0;
+}
+.badge.free   { background: #FFF0C0; color: #B07800; }
+.badge.locked { background: #F0F0F0; color: #888; }
+.badge.premium { background: linear-gradient(135deg, #FF8C00, #E05500); color: white; }
+
+.music-hero { font-size: 5rem; animation: float 3s ease-in-out infinite; margin-bottom: 4px; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+/* ── משחק ── */
+#screen-game { gap: 18px; }
+
+.progress-bar-wrap { width: 100%; background: #FFDFB0; border-radius: 20px; height: 12px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg,#FF8C00,#FFB400); border-radius: 20px; transition: width .5s ease; }
+.round-label { font-size: 1rem; color: #A07030; margin-top: 3px; }
+
+.game-type-badge {
+  font-size: 0.85rem; font-weight: bold; padding: 5px 14px;
+  border-radius: 30px; background: #FFE5B0; color: #8A5000;
+}
+
+.song-box {
+  background: white; border-radius: 18px; padding: 18px 22px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08); width: 100%;
+}
+.song-box .slabel { font-size: 0.9rem; color: #A07030; margin-bottom: 4px; }
+.song-box .stitle { font-size: 1.7rem; font-weight: bold; color: #4A2800; }
+.song-box .sartist { font-size: 0.95rem; color: #A07030; margin-top: 2px; }
+
+.playing-indicator { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; color: #E05500; font-size: 0.95rem; }
+.bars { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
+.bar { width: 4px; background: #E05500; border-radius: 2px; animation: bounce .8s ease-in-out infinite; }
+.bar:nth-child(1){height:8px;animation-delay:0s}
+.bar:nth-child(2){height:16px;animation-delay:.15s}
+.bar:nth-child(3){height:10px;animation-delay:.3s}
+.bar:nth-child(4){height:14px;animation-delay:.1s}
+@keyframes bounce{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.4)}}
+
+/* שאלה */
+.question-box {
+  background: #FFF8E8; border-radius: 16px; padding: 16px 20px;
+  width: 100%; font-size: 1.35rem; font-weight: bold; color: #4A2800;
+  line-height: 1.5; white-space: pre-wrap;
+}
+.blank { display: inline-block; min-width: 80px; border-bottom: 3px solid #E05500; color: #E05500; }
+
+/* כרטיסים */
+.cards-row { display: flex; gap: 16px; width: 100%; justify-content: center; }
+
+.card {
+  flex: 1; max-width: 280px; background: white; border-radius: 22px;
+  padding: 24px 14px; cursor: pointer; border: 4px solid transparent;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+.card:hover  { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.14); }
+.card:active { transform: scale(0.96); }
+.card .emoji  { font-size: 5rem; line-height: 1; }
+.card .clabel { font-size: 1.4rem; font-weight: bold; color: #4A3200; text-align: center; }
+
+/* כרטיסי טקסט (להשלמה / מי שר) */
+.card.text-card .clabel { font-size: 1.3rem; }
+.card.text-card .emoji  { font-size: 2.2rem; }
+
+.card.correct { border-color: #4CAF50; background: #F1FFF4; }
+.card.wrong   { border-color: #EF5350; background: #FFF5F5; }
+.card.shake   { animation: shake .4s; }
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+
+/* ── Overlay ── */
+.overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  align-items: center; justify-content: center; z-index: 100;
+  flex-direction: column; gap: 16px;
+}
+.overlay.active { display: flex; }
+
+.feedback-box {
+  background: white; border-radius: 28px; padding: 36px 44px;
+  text-align: center; max-width: 360px; width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  animation: popIn .35s cubic-bezier(.175,.885,.32,1.275);
+}
+@keyframes popIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.feedback-box .big-emoji { font-size: 4.5rem; margin-bottom: 10px; }
+.feedback-box h2 { font-size: 1.9rem; margin-bottom: 6px; color: #3A2400; }
+.feedback-box p  { font-size: 1.15rem; color: #7A5500; }
+
+.btn-next {
+  background: linear-gradient(135deg,#FF8C00,#E05500); color: white;
+  border: none; border-radius: 50px; padding: 16px 46px;
+  font-size: 1.5rem; cursor: pointer;
+  box-shadow: 0 6px 18px rgba(224,85,0,.4); font-family: inherit;
+  transition: transform .15s;
+}
+.btn-next:active { transform: scale(.96); }
+
+/* קונפטי */
+.confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 99; overflow: hidden; }
+.confetti-piece {
+  position: absolute; top: -20px; width: 12px; height: 12px;
+  border-radius: 2px; animation: fall linear forwards;
+}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* ── סיום ── */
+#screen-end { gap: 20px; }
+#screen-end h1 { font-size: 2.5rem; color: #D45B00; }
+.score-box { background: white; border-radius: 22px; padding: 24px 36px; box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+.score-big { font-size: 3.5rem; font-weight: bold; color: #E05500; }
+.score-sub { font-size: 1.2rem; color: #A07030; margin-top: 4px; }
+.trophy-big { font-size: 5rem; margin-bottom: 4px; }
+
+.summary-list { width: 100%; list-style: none; display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; }
+.summary-list li {
+  background: white; border-radius: 12px; padding: 10px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 1rem; color: #4A3200; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.result-icon { font-size: 1.3rem; }
+
+.end-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.btn-primary {
+  background: linear-gradient(135deg,#FF8C00,#E05500); color: white;
+  border: none; border-radius: 50px; padding: 18px 40px;
+  font-size: 1.5rem; cursor: pointer; font-family: inherit;
+  box-shadow: 0 6px 18px rgba(224,85,0,.4); transition: transform .15s;
+  width: 100%;
+}
+.btn-primary:active { transform: scale(.97); }
+.btn-secondary {
+  background: white; color: #D45B00;
+  border: 2.5px solid #FFD580; border-radius: 50px; padding: 14px 40px;
+  font-size: 1.3rem; cursor: pointer; font-family: inherit;
+  transition: transform .15s; width: 100%;
+}
+.btn-secondary:active { transform: scale(.97); }
+
+/* ── מסך מנוי ── */
+#screen-subscribe { gap: 22px; }
+#screen-subscribe h1 { font-size: 2.4rem; color: #D45B00; line-height: 1.3; }
+
+.price-card {
+  background: white; border-radius: 24px; padding: 28px 36px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.1); width: 100%; position: relative;
+  border: 3px solid #FFD580;
+}
+.price-tag { font-size: 0.85rem; color: #A07030; margin-bottom: 6px; }
+.price-amount { font-size: 3rem; font-weight: bold; color: #E05500; line-height: 1; }
+.price-period { font-size: 1.1rem; color: #A07030; margin-top: 4px; }
+.price-note { font-size: 0.9rem; color: #BBA070; margin-top: 8px; }
+
+.benefits-list { list-style: none; width: 100%; display: flex; flex-direction: column; gap: 12px; }
+.benefits-list li {
+  background: white; border-radius: 14px; padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 1.05rem; color: #4A2800;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.benefits-list li .bi { font-size: 1.6rem; }
+
+.btn-subscribe {
+  background: linear-gradient(135deg,#FF8C00,#E05500); color: white;
+  border: none; border-radius: 50px; padding: 20px 50px;
+  font-size: 1.6rem; cursor: pointer; font-family: inherit;
+  box-shadow: 0 6px 20px rgba(224,85,0,.45); transition: transform .15s;
+  width: 100%;
+}
+.btn-subscribe:active { transform: scale(.97); }
+
+.locked-preview {
+  background: rgba(0,0,0,.04); border-radius: 18px; padding: 16px;
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  border: 2px dashed #DDD;
+}
+.locked-preview .lp-icon { font-size: 2.8rem; }
+.locked-preview .lp-text { text-align: right; }
+.locked-preview .lp-title { font-size: 1.2rem; font-weight: bold; color: #4A2800; }
+.locked-preview .lp-desc  { font-size: 0.9rem; color: #999; }
+
+/* ── Modal "בקרוב" ── */
+#modal-soon {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5);
+  align-items: center; justify-content: center; z-index: 200;
+}
+#modal-soon.active { display: flex; }
+.modal-box {
+  background: white; border-radius: 28px; padding: 36px 40px;
+  text-align: center; max-width: 340px; width: 90%;
+  animation: popIn .3s cubic-bezier(.175,.885,.32,1.275);
+}
+.modal-box .m-emoji { font-size: 4rem; margin-bottom: 12px; }
+.modal-box h2 { font-size: 1.7rem; color: #3A2400; margin-bottom: 8px; }
+.modal-box p  { font-size: 1rem; color: #7A5500; margin-bottom: 20px; }
+.btn-modal {
+  background: linear-gradient(135deg,#FF8C00,#E05500); color: white;
+  border: none; border-radius: 50px; padding: 14px 36px;
+  font-size: 1.2rem; cursor: pointer; font-family: inherit;
+}
+
+/* ── YouTube מוסתר ── */
+#yt-player { position: fixed; top: -300px; left: -300px; opacity: 0; pointer-events: none; }
+
+/* ── רספונסיבי ── */
+@media (max-width: 480px) {
+  #screen-home h1 { font-size: 2rem; }
+  .card .emoji    { font-size: 3.8rem; }
+  .card .clabel   { font-size: 1.15rem; }
+  .song-box .stitle { font-size: 1.4rem; }
+  .question-box  { font-size: 1.15rem; }
+  .cards-row     { gap: 10px; }
+  .card          { padding: 18px 10px; }
+  .game-card     { padding: 14px 16px; }
+  .game-card .card-icon { font-size: 2.4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ בית ══════════ -->
+<div id="screen-home" class="screen active">
+  <div class="music-hero">🎵</div>
+  <h1>משחק הזיכרונות</h1>
+  <p class="tagline">שירים ישראליים אהובים</p>
+
+  <div class="game-cards">
+
+    <div class="game-card free-card" onclick="startGame('song_image')">
+      <div class="card-icon">🖼️</div>
+      <div class="card-body">
+        <div class="card-title">שיר ותמונה</div>
+        <div class="card-desc">שמעי שיר ובחרי את התמונה הנכונה</div>
+      </div>
+      <div class="badge free">חינם ✓</div>
+    </div>
+
+    <div class="game-card free-card" onclick="startGame('complete')">
+      <div class="card-icon">📝</div>
+      <div class="card-body">
+        <div class="card-title">השלם את השיר</div>
+        <div class="card-desc">שמעי שיר ומלאי את המילה החסרה</div>
+      </div>
+      <div class="badge free">חינם ✓</div>
+    </div>
+
+    <div class="game-card locked-card" onclick="showSubscribe()">
+      <div class="card-icon">🎤</div>
+      <div class="card-body">
+        <div class="card-title">מי שר?</div>
+        <div class="card-desc">שמעי שיר וזהי את הזמר</div>
+      </div>
+      <div class="badge locked">🔒 מנוי</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ משחק ══════════ -->
+<div id="screen-game" class="screen">
+  <div class="progress-bar-wrap" style="width:100%">
+    <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+  <div class="round-label" id="round-label">שיר 1 מתוך 8</div>
+  <div class="game-type-badge" id="game-type-badge">🖼️ שיר ותמונה</div>
+
+  <div class="song-box">
+    <div class="slabel">🎵 מתנגן עכשיו:</div>
+    <div class="stitle"  id="song-title-display">...</div>
+    <div class="sartist" id="song-artist-display"></div>
+    <div class="playing-indicator">
+      <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+      <span>מנגן...</span>
+    </div>
+  </div>
+
+  <div class="question-box" id="question-box"></div>
+
+  <div class="cards-row" id="cards-row"></div>
+</div>
+
+<!-- ══════════ סיום ══════════ -->
+<div id="screen-end" class="screen">
+  <div class="trophy-big" id="end-trophy">🏆</div>
+  <h1 id="end-title">כל הכבוד!</h1>
+  <div class="score-box">
+    <div class="score-big" id="score-display">8 / 8</div>
+    <div class="score-sub" id="score-msg">מלכה של הזיכרון!</div>
+  </div>
+  <ul class="summary-list" id="summary-list"></ul>
+  <div class="end-buttons">
+    <button class="btn-primary"   id="btn-play-again">שוב! 🎵</button>
+    <button class="btn-secondary" onclick="showHome()">בחרי משחק אחר</button>
+  </div>
+</div>
+
+<!-- ══════════ מנוי ══════════ -->
+<div id="screen-subscribe" class="screen">
+  <div style="font-size:4rem">🌟</div>
+  <h1>פתחי משחק חדש!</h1>
+
+  <div class="price-card">
+    <div class="price-tag">מסלול יחיד · בלי הגבלה</div>
+    <div class="price-amount">₪19.90</div>
+    <div class="price-period">לחודש</div>
+    <div class="price-note">ביטול בכל עת · ללא התחייבות</div>
+  </div>
+
+  <ul class="benefits-list">
+    <li><span class="bi">🎤</span> משחק "מי שר?" — פתוח מיד</li>
+    <li><span class="bi">🎮</span> כל משחק חדש שיצא — בחינם</li>
+    <li><span class="bi">💡</span> הציעי רעיונות למשחקים הבאים</li>
+    <li><span class="bi">❤️</span> תומכים בפיתוח בשביל אהובינו</li>
+  </ul>
+
+  <div class="locked-preview">
+    <div class="lp-icon">🎤</div>
+    <div class="lp-text">
+      <div class="lp-title">מי שר? — ממתין לך</div>
+      <div class="lp-desc">שמעי שיר ובחרי בין שני זמרים מפורסמים</div>
+    </div>
+  </div>
+
+  <button class="btn-subscribe" onclick="handleSubscribe()">התחילי מנוי 🎵</button>
+  <button class="btn-secondary" style="margin-top:-4px" onclick="showHome()">חזרה</button>
+</div>
+
+<!-- ══════════ Overlay ══════════ -->
+<div class="overlay" id="overlay">
+  <div class="confetti-wrap" id="confetti-wrap"></div>
+  <div class="feedback-box">
+    <div class="big-emoji" id="feedback-emoji">✅</div>
+    <h2 id="feedback-title">כל הכבוד!</h2>
+    <p  id="feedback-msg">ממש נכון!</p>
+  </div>
+  <button class="btn-next" id="btn-next" onclick="nextRound()">הבא ▶</button>
+</div>
+
+<!-- ══════════ Modal בקרוב ══════════ -->
+<div id="modal-soon">
+  <div class="modal-box">
+    <div class="m-emoji">🙏</div>
+    <h2>תודה רבה!</h2>
+    <p>המנוי בקרוב. נעדכן אותך ברגע שהוא פתוח!</p>
+    <button class="btn-modal" onclick="closeSoon()">סגור</button>
+  </div>
+</div>
+
+<div id="yt-player"></div>
+
+<script>
+// ══════════════════════════════════════
+//  נתוני שירים
+// ══════════════════════════════════════
+
+const SONGS_IMAGE = [
+  { title:"יש לך שמש",      artist:"גלי עטרי (1972)",          ytId:"A1vC-4tYZNw", startSec:4,  question:"על מה השיר?",          correct:{emoji:"☀️",label:"שמש"},       wrong:{emoji:"🌙",label:"ירח"} },
+  { title:"שיר לשלום",      artist:"מירי אלוני ולהקת הנח\"ל", ytId:"FzctIYm5ayg", startSec:10, question:"מה השיר מבקש?",         correct:{emoji:"🕊️",label:"שלום"},     wrong:{emoji:"⚔️",label:"מלחמה"} },
+  { title:"ירושלים של זהב", artist:"נעמי שמר",                 ytId:"UGfkf0CxMRw", startSec:8,  question:"על איזו עיר השיר?",    correct:{emoji:"🕍",label:"ירושלים"},   wrong:{emoji:"🌊",label:"ים"} },
+  { title:"לו יהי",         artist:"נעמי שמר",                 ytId:"cpp8XENcuBk", startSec:5,  question:"על מה חולמים בשיר?",   correct:{emoji:"🌅",label:"שמש ואור"}, wrong:{emoji:"🌧️",label:"גשם"} },
+  { title:"הנה מה טוב",     artist:"שיר עברי מסורתי",          ytId:"wQTpIEs6HSo", startSec:3,  question:"על מה מדבר השיר?",     correct:{emoji:"👨‍👩‍👧",label:"יחד"},      wrong:{emoji:"😢",label:"לבד"} },
+  { title:"בשנה הבאה",      artist:"אילנית",                   ytId:"n3AAzk3UAws", startSec:10, question:"מתי נפגשים בשיר?",     correct:{emoji:"🇮🇱",label:"בשנה הבאה"},wrong:{emoji:"✈️",label:"בחו\"ל"} },
+  { title:"שיר העמק",       artist:"אריק איינשטיין",           ytId:"Tbs8VFNdFpU", startSec:5,  question:"מה רואים בשיר?",       correct:{emoji:"🌾",label:"שדות"},      wrong:{emoji:"🏙️",label:"עיר"} },
+  { title:"ענן על מקל",     artist:"שיר ילדים",                ytId:"Kjb8OGPOXuw", startSec:3,  question:"מי בשיר?",             correct:{emoji:"🐑",label:"כבשה"},      wrong:{emoji:"🐟",label:"דג"} },
+  { title:"שיר הרועים",     artist:"שיר ארץ ישראלי",           ytId:"2VrRWcokBCk", startSec:3,  question:"מה עושה הרועה?",       correct:{emoji:"🐑",label:"רועה"},      wrong:{emoji:"⚓",label:"דייג"} }
+];
+
+const SONGS_COMPLETE = [
+  { title:"ירושלים של זהב", artist:"נעמי שמר",                 ytId:"UGfkf0CxMRw", startSec:8,
+    lyric:"ירושלים של ___",             correct:{word:"זהב",emoji:"🏆"},   wrong:{word:"כסף",emoji:"🥈"} },
+  { title:"הנה מה טוב",     artist:"שיר עברי מסורתי",          ytId:"wQTpIEs6HSo", startSec:3,
+    lyric:"שבת אחים גם ___",            correct:{word:"יחד",emoji:"👨‍👩‍👧"},   wrong:{word:"לבד",emoji:"😶"} },
+  { title:"שיר לשלום",      artist:"מירי אלוני ולהקת הנח\"ל", ytId:"FzctIYm5ayg", startSec:10,
+    lyric:"שיר ל___",                   correct:{word:"שלום",emoji:"🕊️"},  wrong:{word:"מלחמה",emoji:"⚔️"} },
+  { title:"יש לך שמש",      artist:"גלי עטרי",                 ytId:"A1vC-4tYZNw", startSec:4,
+    lyric:"יש לך ___, מה לך כבר",       correct:{word:"שמש",emoji:"☀️"},   wrong:{word:"ירח",emoji:"🌙"} },
+  { title:"שיר העמק",       artist:"אריק איינשטיין",           ytId:"Tbs8VFNdFpU", startSec:5,
+    lyric:"שיר ה___",                   correct:{word:"עמק",emoji:"🌾"},   wrong:{word:"ים",emoji:"🌊"} },
+  { title:"בשנה הבאה",      artist:"אילנית",                   ytId:"n3AAzk3UAws", startSec:10,
+    lyric:"בשנה הבאה ___ בירושלים",    correct:{word:"נשב",emoji:"🏠"},   wrong:{word:"נעוף",emoji:"✈️"} },
+  { title:"הנה מה טוב",     artist:"שיר עברי מסורתי",          ytId:"wQTpIEs6HSo", startSec:3,
+    lyric:"הנה מה ___",                 correct:{word:"טוב",emoji:"✨"},   wrong:{word:"רע",emoji:"😟"} },
+  { title:"ענן על מקל",     artist:"שיר ילדים",                ytId:"Kjb8OGPOXuw", startSec:3,
+    lyric:"ענן על ___",                 correct:{word:"מקל",emoji:"🦯"},   wrong:{word:"עץ",emoji:"🌳"} },
+  { title:"לו יהי",         artist:"נעמי שמר",                 ytId:"cpp8XENcuBk", startSec:5,
+    lyric:"לו ___, לו יהי",            correct:{word:"יהי",emoji:"🌟"},   wrong:{word:"לא",emoji:"❌"} }
+];
+
+const SONGS_WHO = [
+  { title:"ירושלים של זהב", ytId:"UGfkf0CxMRw", startSec:8,  question:"מי שר את השיר?", correct:{name:"נעמי שמר",     emoji:"👩"}, wrong:{name:"חוה אלברשטיין", emoji:"👩"} },
+  { title:"שיר לשלום",      ytId:"FzctIYm5ayg", startSec:10, question:"מי שר את השיר?", correct:{name:"מירי אלוני",   emoji:"🎤"}, wrong:{name:"יפה ירקוני",    emoji:"🎤"} },
+  { title:"יש לך שמש",      ytId:"A1vC-4tYZNw", startSec:4,  question:"מי שר את השיר?", correct:{name:"גלי עטרי",     emoji:"🌟"}, wrong:{name:"אילנית",        emoji:"🌟"} },
+  { title:"שיר העמק",       ytId:"Tbs8VFNdFpU", startSec:5,  question:"מי שר את השיר?", correct:{name:"אריק איינשטיין",emoji:"🎸"}, wrong:{name:"שלמה ארצי",    emoji:"🎸"} },
+  { title:"בשנה הבאה",      ytId:"n3AAzk3UAws", startSec:10, question:"מי שר את השיר?", correct:{name:"אילנית",       emoji:"🌸"}, wrong:{name:"גלי עטרי",     emoji:"🌸"} },
+  { title:"לו יהי",         ytId:"cpp8XENcuBk", startSec:5,  question:"מי שר את השיר?", correct:{name:"נעמי שמר",     emoji:"👩"}, wrong:{name:"שולי נתן",     emoji:"👩"} },
+  { title:"הנה מה טוב",     ytId:"wQTpIEs6HSo", startSec:3,  question:"מי שר את השיר?", correct:{name:"מקהלה",        emoji:"🎶"}, wrong:{name:"זמר יחיד",     emoji:"🎤"} }
+];
+
+// ══════════════════════════════════════
+//  מצב
+// ══════════════════════════════════════
+const ROUNDS = 8;
+let currentGameType = 'song_image';
+let queue = [], currentIdx = 0, score = 0, results = [], answered = false;
+let ytPlayer = null, ytReady = false;
+
+// ══════════════════════════════════════
+//  ניווט
+// ══════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showHome()      { stopSong(); showScreen('screen-home'); }
+function showSubscribe() { showScreen('screen-subscribe'); }
+
+// ══════════════════════════════════════
+//  YouTube
+// ══════════════════════════════════════
+window.onYouTubeIframeAPIReady = function() {
+  ytReady = true;
+  ytPlayer = new YT.Player('yt-player', {
+    height:'1', width:'1',
+    playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1 },
+    events:{ onReady:()=>{}, onError:()=>{} }
+  });
+};
+function loadYT() {
+  if (document.getElementById('yt-script')) return;
+  const t = document.createElement('script');
+  t.id = 'yt-script';
+  t.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(t);
+}
+function playSong(s) {
+  if (ytPlayer && ytReady && ytPlayer.loadVideoById) {
+    ytPlayer.loadVideoById({ videoId: s.ytId, startSeconds: s.startSec || 0 });
+    ytPlayer.setVolume(90);
+  }
+}
+function stopSong() {
+  if (ytPlayer && ytReady && ytPlayer.stopVideo) ytPlayer.stopVideo();
+}
+
+// ══════════════════════════════════════
+//  משחק
+// ══════════════════════════════════════
+function shuffle(a) {
+  const arr = [...a];
+  for (let i = arr.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function getDataset() {
+  if (currentGameType === 'song_image') return SONGS_IMAGE;
+  if (currentGameType === 'complete')   return SONGS_COMPLETE;
+  return SONGS_WHO;
+}
+
+function startGame(type) {
+  loadYT();
+  currentGameType = type;
+  queue = shuffle(getDataset()).slice(0, ROUNDS);
+  currentIdx = 0; score = 0; results = [];
+
+  const badges = { song_image:'🖼️ שיר ותמונה', complete:'📝 השלם את השיר', who_sings:'🎤 מי שר?' };
+  document.getElementById('game-type-badge').textContent = badges[type];
+
+  showScreen('screen-game');
+  loadRound();
+}
+
+function loadRound() {
+  answered = false;
+  const s = queue[currentIdx];
+
+  document.getElementById('progress-fill').style.width = (currentIdx/ROUNDS*100) + '%';
+  document.getElementById('round-label').textContent = `שיר ${currentIdx+1} מתוך ${ROUNDS}`;
+  document.getElementById('song-title-display').textContent  = s.title;
+  document.getElementById('song-artist-display').textContent = s.artist || '';
+
+  // שאלה
+  const qbox = document.getElementById('question-box');
+  if (currentGameType === 'complete') {
+    const parts = s.lyric.split('___');
+    qbox.innerHTML = parts[0] + '<span class="blank">___</span>' + (parts[1]||'');
+  } else {
+    qbox.textContent = s.question || 'על מה השיר?';
+  }
+
+  // כרטיסים
+  const isTextCard = (currentGameType === 'complete' || currentGameType === 'who_sings');
+  let correctData, wrongData;
+
+  if (currentGameType === 'song_image') {
+    correctData = { emoji: s.correct.emoji, label: s.correct.label, isCorrect: true };
+    wrongData   = { emoji: s.wrong.emoji,   label: s.wrong.label,   isCorrect: false };
+  } else if (currentGameType === 'complete') {
+    correctData = { emoji: s.correct.emoji, label: s.correct.word, isCorrect: true };
+    wrongData   = { emoji: s.wrong.emoji,   label: s.wrong.word,   isCorrect: false };
+  } else {
+    correctData = { emoji: s.correct.emoji, label: s.correct.name, isCorrect: true };
+    wrongData   = { emoji: s.wrong.emoji,   label: s.wrong.name,   isCorrect: false };
+  }
+
+  const cards = shuffle([correctData, wrongData]);
+  const row = document.getElementById('cards-row');
+  row.innerHTML = '';
+  cards.forEach(card => {
+    const el = document.createElement('div');
+    el.className = 'card' + (isTextCard ? ' text-card' : '');
+    el.innerHTML = `<div class="emoji">${card.emoji}</div><div class="clabel">${card.label}</div>`;
+    el.addEventListener('click', () => handleAnswer(el, card.isCorrect));
+    row.appendChild(el);
+  });
+
+  playSong(s);
+}
+
+function handleAnswer(cardEl, isCorrect) {
+  if (answered) return;
+  answered = true;
+  stopSong();
+
+  if (isCorrect) {
+    score++;
+    cardEl.classList.add('correct');
+    spawnConfetti();
+  } else {
+    cardEl.classList.add('wrong');
+    cardEl.classList.add('shake');
+    document.querySelectorAll('.card:not(.wrong)').forEach(c => c.classList.add('correct'));
+  }
+
+  results.push({ title: queue[currentIdx].title, ok: isCorrect });
+  showOverlay(isCorrect);
+}
+
+function showOverlay(correct) {
+  const msgs = {
+    correct: [
+      {emoji:'🌟',title:'כל הכבוד!',   msg:'ממש נכון! איזה זיכרון מדהים!'},
+      {emoji:'🎉',title:'יפה מאוד!',   msg:'זיהית בול!'},
+      {emoji:'💛',title:'מעולה!',       msg:'נכון לגמרי!'},
+      {emoji:'🌸',title:'אלופה!',       msg:'מושלם!'}
+    ],
+    wrong: [
+      {emoji:'😊',title:'כמעט!',        msg:'זה היה קשה. ננסה שיר אחר!'},
+      {emoji:'💪',title:'לא נורא!',     msg:'השיר הבא בטוח יצליח!'},
+      {emoji:'🌈',title:'ממשיכות!',     msg:'ביחד נצליח!'}
+    ]
+  };
+  const list   = correct ? msgs.correct : msgs.wrong;
+  const chosen = list[Math.floor(Math.random()*list.length)];
+
+  document.getElementById('feedback-emoji').textContent = chosen.emoji;
+  document.getElementById('feedback-title').textContent = chosen.title;
+  document.getElementById('feedback-msg').textContent   = chosen.msg;
+
+  const isLast = currentIdx >= ROUNDS-1;
+  document.getElementById('btn-next').textContent = isLast ? 'לסיכום! 🎊' : 'הבא ▶';
+  document.getElementById('overlay').classList.add('active');
+}
+
+function nextRound() {
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('confetti-wrap').innerHTML = '';
+  currentIdx++;
+  if (currentIdx >= ROUNDS) showEnd();
+  else loadRound();
+}
+
+function showEnd() {
+  showScreen('screen-end');
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('score-display').textContent = `${score} / ${ROUNDS}`;
+
+  const pct = score/ROUNDS;
+  let trophy, title, msg;
+  if (pct===1)        { trophy='🏆'; title='מושלמת!';      msg='ניצחת בכל השירים!'; }
+  else if (pct>=.75)  { trophy='🌟'; title='כל הכבוד!';    msg='זיכרון מדהים!'; }
+  else if (pct>=.5)   { trophy='🌸'; title='יפה מאוד!';    msg='רוב השירים הצלחת!'; }
+  else                { trophy='💛'; title='ממשיכים!';      msg='השיר הבא בטוח יצליח!'; }
+
+  document.getElementById('end-trophy').textContent = trophy;
+  document.getElementById('end-title').textContent  = title;
+  document.getElementById('score-msg').textContent  = msg;
+
+  const list = document.getElementById('summary-list');
+  list.innerHTML = '';
+  results.forEach(r => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${r.title}</span><span class="result-icon">${r.ok?'✅':'❌'}</span>`;
+    list.appendChild(li);
+  });
+
+  document.getElementById('btn-play-again').onclick = () => startGame(currentGameType);
+
+  if (pct >= .75) spawnConfetti();
+}
+
+// ══════════════════════════════════════
+//  מנוי
+// ══════════════════════════════════════
+function handleSubscribe() {
+  document.getElementById('modal-soon').classList.add('active');
+}
+function closeSoon() {
+  document.getElementById('modal-soon').classList.remove('active');
+}
+
+// ══════════════════════════════════════
+//  קונפטי
+// ══════════════════════════════════════
+const COLORS = ['#FF8C00','#FFB400','#FF6B6B','#4ECDC4','#45B7D1','#96E6A1','#DDA0DD'];
+function spawnConfetti() {
+  const wrap = document.getElementById('confetti-wrap');
+  wrap.innerHTML = '';
+  for (let i=0; i<70; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    const size  = 8 + Math.random()*10;
+    const left  = Math.random()*100;
+    const dur   = 1.5 + Math.random()*2;
+    const delay = Math.random()*.8;
+    const color = COLORS[Math.floor(Math.random()*COLORS.length)];
+    el.style.cssText = `left:${left}%;width:${size}px;height:${size}px;background:${color};animation-duration:${dur}s;animation-delay:${delay}s;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    wrap.appendChild(el);
+  }
+}
+</script>
+</body>
+</html>
