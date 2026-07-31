@@ -9,7 +9,7 @@
 
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #FFF9E6 0%, #FFF0D4 100%);
+  background: linear-gradient(135deg, #EEF4FF 0%, #E3ECFF 100%);
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
   direction: rtl;
@@ -20,8 +20,8 @@ body {
 
 /* ── בית ── */
 #screen-home { gap: 18px; }
-#screen-home h1 { font-size: 2.6rem; color: #D45B00; line-height: 1.2; }
-#screen-home .tagline { font-size: 1.2rem; color: #8A6030; margin-bottom: 4px; }
+#screen-home h1 { font-size: 2.6rem; color: #1A5276; line-height: 1.2; }
+#screen-home .tagline { font-size: 1.2rem; color: #2471A3; margin-bottom: 4px; }
 
 .music-hero { font-size: 5rem; animation: float 3s ease-in-out infinite; margin-bottom: 4px; }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
@@ -37,39 +37,39 @@ body {
 }
 .game-card:hover  { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,.12); }
 .game-card:active { transform: scale(.98); }
-.game-card.free-card   { border-color: #FFD580; }
+.game-card.free-card   { border-color: #90CAF9; }
 .game-card.locked-card { border-color: #E0E0E0; opacity: .85; }
 
 .card-icon  { font-size: 2.8rem; flex-shrink: 0; }
 .card-body  { flex: 1; }
-.card-title { font-size: 1.35rem; font-weight: bold; color: #3A2400; margin-bottom: 2px; }
-.card-desc  { font-size: .9rem; color: #8A6030; }
+.card-title { font-size: 1.35rem; font-weight: bold; color: #1A2B4A; margin-bottom: 2px; }
+.card-desc  { font-size: .9rem; color: #2471A3; }
 
 .badge { font-size: .8rem; font-weight: bold; padding: 4px 10px; border-radius: 30px; flex-shrink: 0; }
-.badge.free    { background: #FFF0C0; color: #B07800; }
+.badge.free    { background: #DDEEFF; color: #1565C0; }
 .badge.locked  { background: #F0F0F0; color: #888; }
 
 /* ── משחק שיר ── */
 #screen-game { gap: 18px; }
 
-.progress-bar-wrap { width: 100%; background: #FFDFB0; border-radius: 20px; height: 12px; overflow: hidden; }
-.progress-bar-fill { height: 100%; background: linear-gradient(90deg,#FF8C00,#FFB400); border-radius: 20px; transition: width .5s ease; }
-.round-label { font-size: 1rem; color: #A07030; margin-top: 3px; }
-.game-type-badge { font-size: .85rem; font-weight: bold; padding: 5px 14px; border-radius: 30px; background: #FFE5B0; color: #8A5000; }
+.progress-bar-wrap { width: 100%; background: #BBDEFB; border-radius: 20px; height: 12px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg,#1E88E5,#42A5F5); border-radius: 20px; transition: width .5s ease; }
+.round-label { font-size: 1rem; color: #5B8DB8; margin-top: 3px; }
+.game-type-badge { font-size: .85rem; font-weight: bold; padding: 5px 14px; border-radius: 30px; background: #DDEEFF; color: #8A5000; }
 
 .song-box { background: white; border-radius: 18px; padding: 16px 20px; box-shadow: 0 4px 14px rgba(0,0,0,.08); width: 100%; }
-.song-box .slabel  { font-size: .9rem; color: #A07030; margin-bottom: 4px; }
-.song-box .stitle  { font-size: 1.6rem; font-weight: bold; color: #4A2800; }
-.song-box .sartist { font-size: .9rem; color: #A07030; margin-top: 2px; }
-.playing-indicator { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; color: #E05500; font-size: .9rem; }
+.song-box .slabel  { font-size: .9rem; color: #5B8DB8; margin-bottom: 4px; }
+.song-box .stitle  { font-size: 1.6rem; font-weight: bold; color: #1A2B4A; }
+.song-box .sartist { font-size: .9rem; color: #5B8DB8; margin-top: 2px; }
+.playing-indicator { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; color: #1976D2; font-size: .9rem; }
 .bars { display: flex; align-items: flex-end; gap: 3px; height: 16px; }
-.bar { width: 4px; background: #E05500; border-radius: 2px; animation: bounce .8s ease-in-out infinite; }
+.bar { width: 4px; background: #1976D2; border-radius: 2px; animation: bounce .8s ease-in-out infinite; }
 .bar:nth-child(1){height:7px;animation-delay:0s}.bar:nth-child(2){height:14px;animation-delay:.15s}
 .bar:nth-child(3){height:9px;animation-delay:.3s}.bar:nth-child(4){height:12px;animation-delay:.1s}
 @keyframes bounce{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.4)}}
 
-.question-box { background: #FFF8E8; border-radius: 14px; padding: 14px 18px; width: 100%; font-size: 1.3rem; font-weight: bold; color: #4A2800; line-height: 1.5; }
-.blank { display: inline-block; min-width: 80px; border-bottom: 3px solid #E05500; color: #E05500; }
+.question-box { background: #EEF4FF; border-radius: 14px; padding: 14px 18px; width: 100%; font-size: 1.3rem; font-weight: bold; color: #1A2B4A; line-height: 1.5; }
+.blank { display: inline-block; min-width: 80px; border-bottom: 3px solid #1976D2; color: #1976D2; }
 
 .cards-row { display: flex; gap: 14px; width: 100%; justify-content: center; }
 .card {
@@ -83,7 +83,7 @@ body {
 .card:hover  { transform: translateY(-4px); box-shadow: 0 8px 22px rgba(0,0,0,.14); }
 .card:active { transform: scale(.96); }
 .card .emoji  { font-size: 5rem; line-height: 1; }
-.card .clabel { font-size: 1.35rem; font-weight: bold; color: #4A3200; text-align: center; }
+.card .clabel { font-size: 1.35rem; font-weight: bold; color: #1A2B4A; text-align: center; }
 .card.text-card .emoji  { font-size: 2.2rem; }
 .card.text-card .clabel { font-size: 1.25rem; }
 .card.correct { border-color: #4CAF50; background: #F1FFF4; }
@@ -93,24 +93,24 @@ body {
 
 /* ── סיימון ── */
 #screen-simon { gap: 20px; }
-#screen-simon h2 { font-size: 1.8rem; color: #D45B00; }
+#screen-simon h2 { font-size: 1.8rem; color: #1A5276; }
 
 .simon-meta { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
 
 .simon-level-row { display: flex; align-items: center; gap: 10px; }
-.simon-level-label { font-size: 1.1rem; font-weight: bold; color: #5A3800; }
+.simon-level-label { font-size: 1.1rem; font-weight: bold; color: #1A4070; }
 
 .simon-dots { display: flex; gap: 8px; }
 .sdot { width: 16px; height: 16px; border-radius: 50%; background: #DDD; transition: background .3s; }
 .sdot.done   { background: #4CAF50; }
-.sdot.active { background: #FF8C00; }
+.sdot.active { background: #1E88E5; }
 
 .turn-indicator {
   font-size: 1.3rem; font-weight: bold; padding: 10px 24px;
   border-radius: 50px; transition: all .3s; min-width: 220px;
 }
 .turn-indicator.simon-turn  { background: #E3F2FD; color: #1565C0; }
-.turn-indicator.player-turn { background: #FFF3E0; color: #E05500; }
+.turn-indicator.player-turn { background: #FFF3E0; color: #1976D2; }
 
 /* גריד תווים 2×2 */
 .simon-grid {
@@ -128,7 +128,7 @@ body {
 .simon-btn .note-icon { font-size: 3rem; pointer-events: none; }
 .simon-btn .note-name { font-size: 1rem; font-weight: bold; color: white; opacity: .85; pointer-events: none; }
 
-.simon-btn.btn-0 { background: linear-gradient(135deg,#FF8C00,#E05500); }
+.simon-btn.btn-0 { background: linear-gradient(135deg,#1E88E5,#1976D2); }
 .simon-btn.btn-1 { background: linear-gradient(135deg,#4CAF50,#2E7D32); }
 .simon-btn.btn-2 { background: linear-gradient(135deg,#2196F3,#1565C0); }
 .simon-btn.btn-3 { background: linear-gradient(135deg,#9C27B0,#6A0080); }
@@ -137,8 +137,8 @@ body {
 .simon-btn.disabled { pointer-events: none; filter: brightness(.8); }
 
 .simon-sequence-replay {
-  font-size: .9rem; color: #A07030;
-  background: #FFF8E8; border-radius: 10px; padding: 8px 16px;
+  font-size: .9rem; color: #5B8DB8;
+  background: #EEF4FF; border-radius: 10px; padding: 8px 16px;
 }
 
 /* ── Overlay ── */
@@ -157,14 +157,14 @@ body {
 }
 @keyframes popIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
 .feedback-box .big-emoji { font-size: 4rem; margin-bottom: 10px; }
-.feedback-box h2 { font-size: 1.8rem; margin-bottom: 6px; color: #3A2400; }
-.feedback-box p  { font-size: 1.1rem; color: #7A5500; }
+.feedback-box h2 { font-size: 1.8rem; margin-bottom: 6px; color: #1A2B4A; }
+.feedback-box p  { font-size: 1.1rem; color: #2471A3; }
 
 .btn-next {
-  background: linear-gradient(135deg,#FF8C00,#E05500); color: white;
+  background: linear-gradient(135deg,#1E88E5,#1976D2); color: white;
   border: none; border-radius: 50px; padding: 16px 44px;
   font-size: 1.4rem; cursor: pointer;
-  box-shadow: 0 6px 18px rgba(224,85,0,.4); font-family: inherit; transition: transform .15s;
+  box-shadow: 0 6px 18px rgba(21,101,192,.4); font-family: inherit; transition: transform .15s;
 }
 .btn-next:active { transform: scale(.96); }
 
@@ -178,26 +178,26 @@ body {
 
 /* ── סיום ── */
 #screen-end { gap: 20px; }
-#screen-end h1 { font-size: 2.4rem; color: #D45B00; }
+#screen-end h1 { font-size: 2.4rem; color: #1A5276; }
 .score-box { background: white; border-radius: 20px; padding: 22px 32px; box-shadow: 0 4px 14px rgba(0,0,0,.1); }
-.score-big { font-size: 3.2rem; font-weight: bold; color: #E05500; }
-.score-sub { font-size: 1.15rem; color: #A07030; margin-top: 4px; }
+.score-big { font-size: 3.2rem; font-weight: bold; color: #1976D2; }
+.score-sub { font-size: 1.15rem; color: #5B8DB8; margin-top: 4px; }
 .trophy-big { font-size: 5rem; margin-bottom: 4px; }
 .summary-list { width: 100%; list-style: none; display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; }
-.summary-list li { background: white; border-radius: 12px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 1rem; color: #4A3200; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.summary-list li { background: white; border-radius: 12px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 1rem; color: #1A2B4A; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
 .result-icon { font-size: 1.3rem; }
 .end-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; }
 
 /* ── כפתורים גלובליים ── */
 .btn-primary {
-  background: linear-gradient(135deg,#FF8C00,#E05500); color: white;
+  background: linear-gradient(135deg,#1E88E5,#1976D2); color: white;
   border: none; border-radius: 50px; padding: 16px 38px;
   font-size: 1.4rem; cursor: pointer; font-family: inherit;
-  box-shadow: 0 6px 18px rgba(224,85,0,.4); transition: transform .15s; width: 100%;
+  box-shadow: 0 6px 18px rgba(21,101,192,.4); transition: transform .15s; width: 100%;
 }
 .btn-primary:active { transform: scale(.97); }
 .btn-secondary {
-  background: white; color: #D45B00; border: 2.5px solid #FFD580;
+  background: white; color: #1A5276; border: 2.5px solid #90CAF9;
   border-radius: 50px; padding: 13px 38px;
   font-size: 1.25rem; cursor: pointer; font-family: inherit; transition: transform .15s; width: 100%;
 }
@@ -205,22 +205,22 @@ body {
 
 /* ── מנוי ── */
 #screen-subscribe { gap: 20px; }
-#screen-subscribe h1 { font-size: 2.2rem; color: #D45B00; line-height: 1.3; }
-.price-card { background: white; border-radius: 22px; padding: 24px 32px; box-shadow: 0 4px 18px rgba(0,0,0,.1); width: 100%; border: 3px solid #FFD580; }
-.price-tag    { font-size: .85rem; color: #A07030; margin-bottom: 6px; }
-.price-amount { font-size: 2.8rem; font-weight: bold; color: #E05500; line-height: 1; }
-.price-period { font-size: 1rem; color: #A07030; margin-top: 4px; }
+#screen-subscribe h1 { font-size: 2.2rem; color: #1A5276; line-height: 1.3; }
+.price-card { background: white; border-radius: 22px; padding: 24px 32px; box-shadow: 0 4px 18px rgba(0,0,0,.1); width: 100%; border: 3px solid #90CAF9; }
+.price-tag    { font-size: .85rem; color: #5B8DB8; margin-bottom: 6px; }
+.price-amount { font-size: 2.8rem; font-weight: bold; color: #1976D2; line-height: 1; }
+.price-period { font-size: 1rem; color: #5B8DB8; margin-top: 4px; }
 .price-note   { font-size: .85rem; color: #BBA070; margin-top: 8px; }
 .benefits-list { list-style: none; width: 100%; display: flex; flex-direction: column; gap: 10px; }
-.benefits-list li { background: white; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; font-size: 1rem; color: #4A2800; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.benefits-list li { background: white; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; font-size: 1rem; color: #1A2B4A; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
 .benefits-list li .bi { font-size: 1.5rem; }
 .locked-games { display: flex; flex-direction: column; gap: 10px; width: 100%; }
 .locked-game-preview { background: rgba(0,0,0,.04); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; border: 2px dashed #DDD; }
 .lgp-icon  { font-size: 2.4rem; }
 .lgp-body  { text-align: right; }
-.lgp-title { font-size: 1.1rem; font-weight: bold; color: #4A2800; }
+.lgp-title { font-size: 1.1rem; font-weight: bold; color: #1A2B4A; }
 .lgp-desc  { font-size: .85rem; color: #999; }
-.btn-subscribe { background: linear-gradient(135deg,#FF8C00,#E05500); color: white; border: none; border-radius: 50px; padding: 18px 44px; font-size: 1.5rem; cursor: pointer; font-family: inherit; box-shadow: 0 6px 20px rgba(224,85,0,.45); transition: transform .15s; width: 100%; }
+.btn-subscribe { background: linear-gradient(135deg,#1E88E5,#1976D2); color: white; border: none; border-radius: 50px; padding: 18px 44px; font-size: 1.5rem; cursor: pointer; font-family: inherit; box-shadow: 0 6px 20px rgba(21,101,192,.45); transition: transform .15s; width: 100%; }
 .btn-subscribe:active { transform: scale(.97); }
 
 /* ── Modal ── */
@@ -228,9 +228,9 @@ body {
 #modal-soon.active { display: flex; }
 .modal-box { background: white; border-radius: 26px; padding: 34px 38px; text-align: center; max-width: 320px; width: 90%; animation: popIn .3s cubic-bezier(.175,.885,.32,1.275); }
 .modal-box .m-emoji { font-size: 3.5rem; margin-bottom: 10px; }
-.modal-box h2 { font-size: 1.6rem; color: #3A2400; margin-bottom: 8px; }
-.modal-box p  { font-size: 1rem; color: #7A5500; margin-bottom: 18px; }
-.btn-modal { background: linear-gradient(135deg,#FF8C00,#E05500); color: white; border: none; border-radius: 50px; padding: 12px 32px; font-size: 1.1rem; cursor: pointer; font-family: inherit; }
+.modal-box h2 { font-size: 1.6rem; color: #1A2B4A; margin-bottom: 8px; }
+.modal-box p  { font-size: 1rem; color: #2471A3; margin-bottom: 18px; }
+.btn-modal { background: linear-gradient(135deg,#1E88E5,#1976D2); color: white; border: none; border-radius: 50px; padding: 12px 32px; font-size: 1.1rem; cursor: pointer; font-family: inherit; }
 
 /* ── YouTube מוסתר ── */
 #yt-player { position: fixed; top: -300px; left: -300px; opacity: 0; pointer-events: none; }
@@ -281,13 +281,13 @@ body {
       <div class="badge locked">🔒 מנוי</div>
     </div>
 
-    <div class="game-card locked-card" onclick="showSubscribe()">
+    <div class="game-card free-card" onclick="startSongGame('artist')">
       <div class="card-icon">🎤</div>
       <div class="card-body">
         <div class="card-title">מי שר?</div>
         <div class="card-desc">שמעי שיר וזהי את הזמר</div>
       </div>
-      <div class="badge locked">🔒 מנוי</div>
+      <div class="badge free">חינם ✓</div>
     </div>
   </div>
 </div>
@@ -377,7 +377,6 @@ body {
 
   <ul class="benefits-list">
     <li><span class="bi">🎹</span> סיימון תווים — פתוח מיד</li>
-    <li><span class="bi">🎤</span> "מי שר?" — פתוח מיד</li>
     <li><span class="bi">🎮</span> כל משחק עתידי — ללא תוספת תשלום</li>
     <li><span class="bi">💡</span> הציעי רעיונות ותעצבי את המשחקים הבאים</li>
   </ul>
@@ -388,13 +387,6 @@ body {
       <div class="lgp-body">
         <div class="lgp-title">סיימון תווים</div>
         <div class="lgp-desc">חזרי על סדרת תווים מוזיקליים — עד 6 תווים</div>
-      </div>
-    </div>
-    <div class="locked-game-preview">
-      <div class="lgp-icon">🎤</div>
-      <div class="lgp-body">
-        <div class="lgp-title">מי שר?</div>
-        <div class="lgp-desc">שמעי שיר ובחרי בין שני זמרים ישראליים</div>
       </div>
     </div>
   </div>
@@ -452,6 +444,25 @@ const SONGS_COMPLETE = [
   { title:"הנה מה טוב",     artist:"שיר מסורתי",               ytId:"wQTpIEs6HSo", startSec:3,  lyric:"הנה מה ___",                 correct:{word:"טוב",emoji:"✨"},   wrong:{word:"רע",emoji:"😟"} },
   { title:"לו יהי",         artist:"נעמי שמר",                 ytId:"cpp8XENcuBk", startSec:5,  lyric:"לו ___, לו יהי",            correct:{word:"יהי",emoji:"🌟"},   wrong:{word:"לא",emoji:"❌"} },
   { title:"ענן על מקל",     artist:"שיר ילדים",                ytId:"Kjb8OGPOXuw", startSec:3,  lyric:"ענן על ___",                 correct:{word:"מקל",emoji:"🦯"},   wrong:{word:"עץ",emoji:"🌳"} }
+];
+
+const SONGS_ARTIST = [
+  { title:"יש לך שמש",      ytId:"A1vC-4tYZNw", startSec:4,
+    correct:{name:"גלי עטרי",       emoji:"🎤"}, wrong:{name:"ריתה",           emoji:"🌸"} },
+  { title:"שיר לשלום",      ytId:"FzctIYm5ayg", startSec:10,
+    correct:{name:"מירי אלוני",     emoji:"🕊️"}, wrong:{name:"יפה ירקוני",    emoji:"💛"} },
+  { title:"ירושלים של זהב", ytId:"UGfkf0CxMRw", startSec:8,
+    correct:{name:"שולי נתן",       emoji:"🕍"}, wrong:{name:"נעמי שמר",       emoji:"🎹"} },
+  { title:"בשנה הבאה",      ytId:"n3AAzk3UAws", startSec:10,
+    correct:{name:"אילנית",         emoji:"🌟"}, wrong:{name:"שושנה דמארי",   emoji:"🌺"} },
+  { title:"שיר העמק",       ytId:"Tbs8VFNdFpU", startSec:5,
+    correct:{name:"אריק איינשטיין", emoji:"🎸"}, wrong:{name:"יפה ירקוני",    emoji:"💛"} },
+  { title:"לו יהי",         ytId:"cpp8XENcuBk", startSec:5,
+    correct:{name:"נעמי שמר",       emoji:"🎹"}, wrong:{name:"חוה אלברשטיין", emoji:"🎶"} },
+  { title:"הנה מה טוב",     ytId:"wQTpIEs6HSo", startSec:3,
+    correct:{name:"להקת גבעתי",     emoji:"🎖️"}, wrong:{name:"להקת הנח\"ל",  emoji:"🫡"} },
+  { title:"שיר הרועים",     ytId:"2VrRWcokBCk", startSec:3,
+    correct:{name:"שרה לוי",        emoji:"🎵"}, wrong:{name:"מירי אלוני",    emoji:"🎤"} },
 ];
 
 // ════════════════════════════════════════════
@@ -562,9 +573,10 @@ function shuffle(a) {
 
 function startSongGame(type) {
   gameType = type;
-  queue = shuffle(type === 'song_image' ? SONGS_IMAGE : SONGS_COMPLETE).slice(0, ROUNDS);
+  const dataMap = { song_image: SONGS_IMAGE, complete: SONGS_COMPLETE, artist: SONGS_ARTIST };
+  queue = shuffle(dataMap[type]).slice(0, ROUNDS);
   curIdx = 0; score = 0; results = [];
-  const badges = { song_image:'🖼️ שיר ותמונה', complete:'📝 השלם את השיר' };
+  const badges = { song_image:'🖼️ שיר ותמונה', complete:'📝 השלם את השיר', artist:'🎤 מי שר?' };
   document.getElementById('game-type-badge').textContent = badges[type];
   showScreen('screen-game');
   loadRound();
@@ -582,17 +594,24 @@ function loadRound() {
   if (gameType === 'complete') {
     const parts = s.lyric.split('___');
     qbox.innerHTML = parts[0] + '<span class="blank">___</span>' + (parts[1]||'');
+  } else if (gameType === 'artist') {
+    document.getElementById('song-artist-display').textContent = '';
+    qbox.textContent = '🎤 מי שר?';
   } else {
     qbox.textContent = s.question;
   }
 
-  const isText = (gameType === 'complete');
-  const correctData = isText
-    ? { emoji: s.correct.emoji, label: s.correct.word, isCorrect: true }
-    : { emoji: s.correct.emoji, label: s.correct.label, isCorrect: true };
-  const wrongData = isText
-    ? { emoji: s.wrong.emoji, label: s.wrong.word, isCorrect: false }
-    : { emoji: s.wrong.emoji, label: s.wrong.label, isCorrect: false };
+  const isText = (gameType === 'complete' || gameType === 'artist');
+  const correctData = gameType === 'artist'
+    ? { emoji: s.correct.emoji, label: s.correct.name, isCorrect: true }
+    : isText
+      ? { emoji: s.correct.emoji, label: s.correct.word, isCorrect: true }
+      : { emoji: s.correct.emoji, label: s.correct.label, isCorrect: true };
+  const wrongData = gameType === 'artist'
+    ? { emoji: s.wrong.emoji, label: s.wrong.name, isCorrect: false }
+    : isText
+      ? { emoji: s.wrong.emoji, label: s.wrong.word, isCorrect: false }
+      : { emoji: s.wrong.emoji, label: s.wrong.label, isCorrect: false };
 
   const row = document.getElementById('cards-row');
   row.innerHTML = '';
@@ -865,7 +884,7 @@ function closeSoon()       { document.getElementById('modal-soon').classList.rem
 // ════════════════════════════════════════════
 //  קונפטי
 // ════════════════════════════════════════════
-const COLORS = ['#FF8C00','#FFB400','#FF6B6B','#4ECDC4','#45B7D1','#96E6A1','#DDA0DD'];
+const COLORS = ['#1E88E5','#42A5F5','#FF6B6B','#4ECDC4','#45B7D1','#96E6A1','#DDA0DD'];
 function spawnConfetti() {
   const wrap = document.getElementById('confetti-wrap');
   wrap.innerHTML = '';
