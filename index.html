@@ -243,6 +243,51 @@ body {
   .simon-grid { gap: 12px; max-width: 320px; }
   .song-box .stitle { font-size: 1.35rem; }
 }
+
+/* ── רצפים ── */
+#screen-seq-menu { gap: 20px; }
+.seq-type-cards { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+.seq-type-card {
+  background: white; border-radius: 20px; padding: 20px 22px;
+  display: flex; align-items: center; gap: 16px;
+  cursor: pointer; border: 3px solid #90CAF9;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  transition: transform .15s, box-shadow .15s;
+}
+.seq-type-card:hover  { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,.12); }
+.seq-type-card:active { transform: scale(.98); }
+.seq-type-icon  { font-size: 2.6rem; flex-shrink: 0; }
+.seq-type-body  { text-align: right; }
+.seq-type-title { font-size: 1.3rem; font-weight: bold; color: #1A2B4A; margin-bottom: 2px; }
+.seq-type-desc  { font-size: .9rem; color: #5B8DB8; }
+
+#screen-seq { gap: 14px; }
+.seq-instruction { font-size: .95rem; color: #5B8DB8; }
+.seq-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.seq-item {
+  background: white; border-radius: 16px; padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; border: 3px solid #E0E0E0;
+  box-shadow: 0 3px 10px rgba(0,0,0,.08);
+  font-size: 1.15rem; font-weight: bold; color: #1A2B4A;
+  transition: all .15s; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.seq-item:active:not(.disabled) { transform: scale(.97); }
+.seq-num {
+  width: 38px; height: 38px; min-width: 38px; border-radius: 50%;
+  background: #E8F0FE; color: #999;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: bold; transition: all .2s;
+}
+.seq-item.selected { border-color: #1976D2; background: #EEF4FF; }
+.seq-item.selected .seq-num { background: #1976D2; color: white; }
+.seq-item.correct  { border-color: #4CAF50; background: #F1FFF4; }
+.seq-item.correct .seq-num { background: #4CAF50; color: white; }
+.seq-item.wrong    { border-color: #EF5350; background: #FFF5F5; }
+.seq-item.wrong  .seq-num  { background: #EF5350; color: white; }
+.seq-item.disabled { pointer-events: none; }
+.seq-item-text { flex: 1; }
 </style>
 </head>
 <body>
@@ -268,6 +313,15 @@ body {
       <div class="card-body">
         <div class="card-title">השלם את השיר</div>
         <div class="card-desc">שמעי שיר ומלאי את המילה החסרה</div>
+      </div>
+      <div class="badge free">חינם ✓</div>
+    </div>
+
+    <div class="game-card free-card" onclick="showSeqMenu()">
+      <div class="card-icon">🔢</div>
+      <div class="card-body">
+        <div class="card-title">רצפים</div>
+        <div class="card-desc">סדרי פעולות, תמונות ומשפטים בסדר הנכון</div>
       </div>
       <div class="badge free">חינם ✓</div>
     </div>
@@ -393,6 +447,55 @@ body {
 
   <button class="btn-subscribe" onclick="handleSubscribe()">התחילי מנוי 🎵</button>
   <button class="btn-secondary" style="margin-top:-4px" onclick="showHome()">חזרה</button>
+</div>
+
+<!-- ══ רצפים — תפריט ══ -->
+<div id="screen-seq-menu" class="screen">
+  <div style="font-size:3rem">🔢</div>
+  <h2 style="font-size:1.9rem; color:#1A5276">משחק רצפים</h2>
+  <p style="font-size:1rem; color:#5B8DB8">לחצי על הפריטים בסדר הנכון</p>
+
+  <div class="seq-type-cards">
+    <div class="seq-type-card" onclick="startSeqGame('actions')">
+      <div class="seq-type-icon">🌅</div>
+      <div class="seq-type-body">
+        <div class="seq-type-title">פעולות יומיות</div>
+        <div class="seq-type-desc">מה קורה קודם ומה אחר כך?</div>
+      </div>
+    </div>
+    <div class="seq-type-card" onclick="startSeqGame('images')">
+      <div class="seq-type-icon">🌸</div>
+      <div class="seq-type-body">
+        <div class="seq-type-title">תמונות בסדר</div>
+        <div class="seq-type-desc">עונות, שעות ביום, גדילה ופיתוח</div>
+      </div>
+    </div>
+    <div class="seq-type-card" onclick="startSeqGame('sentences')">
+      <div class="seq-type-icon">📖</div>
+      <div class="seq-type-body">
+        <div class="seq-type-title">משפטים וסיפורים</div>
+        <div class="seq-type-desc">חגים, סיפורים מוכרים, אירועים</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-secondary" style="max-width:220px" onclick="showHome()">חזרה</button>
+</div>
+
+<!-- ══ רצפים — משחק ══ -->
+<div id="screen-seq" class="screen">
+  <div class="progress-bar-wrap" style="width:100%">
+    <div class="progress-bar-fill" id="seq-progress-fill" style="width:0%"></div>
+  </div>
+  <div class="round-label" id="seq-round-label">שאלה 1 מתוך 5</div>
+  <div class="game-type-badge" id="seq-type-badge">🔢 רצפים</div>
+
+  <div class="question-box" id="seq-question">מה הסדר הנכון?</div>
+  <p class="seq-instruction">לחצי על הפריטים בסדר הנכון: 1 ← 2 ← 3 ← 4</p>
+
+  <div class="seq-grid" id="seq-grid"></div>
+
+  <button class="btn-secondary" style="max-width:220px;margin-top:4px" onclick="showSeqMenu()">חזרה</button>
 </div>
 
 <!-- ══ Overlay ══ -->
@@ -554,6 +657,7 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 function showHome()      { stopSong(); simonStop(); showScreen('screen-home'); }
+function showSeqMenu()   { stopSong(); simonStop(); showScreen('screen-seq-menu'); }
 function showSubscribe() { showScreen('screen-subscribe'); }
 
 // ════════════════════════════════════════════
@@ -880,6 +984,160 @@ function showSimonWin() {
 // ════════════════════════════════════════════
 function handleSubscribe() { document.getElementById('modal-soon').classList.add('active'); }
 function closeSoon()       { document.getElementById('modal-soon').classList.remove('active'); }
+
+// ════════════════════════════════════════════
+//  משחק רצפים
+// ════════════════════════════════════════════
+const SEQUENCES_ACTIONS = [
+  { q:"מה הסדר של הבוקר?",
+    items:["🛏️ קימה","🚿 מקלחת","☕ ארוחת בוקר","👗 התלבשות"] },
+  { q:"איך מכינים תה?",
+    items:["🫙 לקחת כוס","🔥 הרתחת מים","🍵 הכנסת שקית תה","☕ שתייה"] },
+  { q:"מה הסדר של הכנת שבת?",
+    items:["🛒 קניות","🍲 בישול","🕯️ הדלקת נרות","🍽️ ארוחה"] },
+  { q:"מה סדר הלילה?",
+    items:["📺 טלוויזיה","🚿 מקלחת","🦷 צחצוח שיניים","🛏️ שינה"] },
+  { q:"איך שותלים פרח?",
+    items:["🪣 הכנת אדמה","🌱 שתילת זרע","💧 השקיה","🌸 פריחה"] },
+];
+
+const SEQUENCES_IMAGES = [
+  { q:"מה סדר העונות בשנה?",
+    items:["🌸 אביב","☀️ קיץ","🍂 סתיו","❄️ חורף"] },
+  { q:"מה סדר השעות ביום?",
+    items:["🌅 בוקר","☀️ צהריים","🌇 ערב","🌙 לילה"] },
+  { q:"מה סדר גדילת פרח?",
+    items:["🌰 זרע","🌱 נבט","🌿 עלים","🌸 פריחה"] },
+  { q:"מה סדר השלבים בחיים?",
+    items:["👶 תינוק","👧 ילד","👩 מבוגר","👵 סבתא"] },
+  { q:"מה סדר גדילת עץ?",
+    items:["🌰 זרע","🌱 שתיל","🌿 ענפים","🌳 עץ גדול"] },
+];
+
+const SEQUENCES_SENTENCES = [
+  { q:"מה הסדר של ליל הסדר?",
+    items:["🪑 ישיבה בשולחן","🍷 קידוש","📖 קריאת ההגדה","🍽️ ארוחת חג"] },
+  { q:"מה הסדר בשבת?",
+    items:["🕯️ הדלקת נרות","🍷 קידוש","✋ נטילת ידיים","🍞 אכילת חלה"] },
+  { q:"מה הסדר בחתונה?",
+    items:["💌 הזמנות","👗 שמלת כלה","💒 חופה","🎉 מסיבת חתונה"] },
+  { q:"מה הסדר של ברית מילה?",
+    items:["👶 לידת תינוק","🎀 בשורה לכולם","🕍 טקס ברית","🎂 חגיגה"] },
+  { q:"מה הסדר של לידה?",
+    items:["🤰 הריון","🏥 לידה","👶 תינוק בבית","🎉 שמחה משפחתית"] },
+];
+
+const SEQ_ROUNDS = 5;
+let seqType = 'actions', seqQueue = [], seqIdx = 0, seqScore = 0, seqResults = [];
+let seqDisplayItems = [], seqSelected = [], seqAnswered = false;
+
+function startSeqGame(type) {
+  seqType = type;
+  const dataMap = { actions: SEQUENCES_ACTIONS, images: SEQUENCES_IMAGES, sentences: SEQUENCES_SENTENCES };
+  seqQueue  = shuffle(dataMap[type]).slice(0, SEQ_ROUNDS);
+  seqIdx = 0; seqScore = 0; seqResults = [];
+  const badges = { actions:'🌅 פעולות', images:'🌸 תמונות', sentences:'📖 משפטים' };
+  document.getElementById('seq-type-badge').textContent = badges[type];
+  showScreen('screen-seq');
+  loadSeqRound();
+}
+
+function loadSeqRound() {
+  seqAnswered = false;
+  seqSelected = [];
+  const s = seqQueue[seqIdx];
+  document.getElementById('seq-progress-fill').style.width = (seqIdx / SEQ_ROUNDS * 100) + '%';
+  document.getElementById('seq-round-label').textContent = `שאלה ${seqIdx + 1} מתוך ${SEQ_ROUNDS}`;
+  document.getElementById('seq-question').textContent = s.q;
+
+  seqDisplayItems = shuffle(s.items.map((text, i) => ({ text, correctIdx: i })));
+
+  const grid = document.getElementById('seq-grid');
+  grid.innerHTML = '';
+  seqDisplayItems.forEach((item, di) => {
+    const el = document.createElement('div');
+    el.className = 'seq-item';
+    el.id = `seq-item-${di}`;
+    el.innerHTML = `<div class="seq-num" id="seq-num-${di}">?</div><div class="seq-item-text">${item.text}</div>`;
+    el.addEventListener('click', () => handleSeqTap(di));
+    grid.appendChild(el);
+  });
+}
+
+function handleSeqTap(di) {
+  if (seqAnswered || seqSelected.includes(di)) return;
+  seqSelected.push(di);
+  const el = document.getElementById(`seq-item-${di}`);
+  el.classList.add('selected');
+  document.getElementById(`seq-num-${di}`).textContent = seqSelected.length;
+  if (seqSelected.length === seqDisplayItems.length) checkSeqAnswer();
+}
+
+function checkSeqAnswer() {
+  seqAnswered = true;
+  let allCorrect = true;
+  seqDisplayItems.forEach((item, di) => {
+    const el    = document.getElementById(`seq-item-${di}`);
+    const numEl = document.getElementById(`seq-num-${di}`);
+    const userPos = seqSelected.indexOf(di);
+    const ok = userPos === item.correctIdx;
+    if (!ok) allCorrect = false;
+    el.classList.add(ok ? 'correct' : 'wrong');
+    el.classList.add('disabled');
+    numEl.textContent = item.correctIdx + 1; // show correct number
+  });
+  if (allCorrect) seqScore++;
+  seqResults.push({ title: seqQueue[seqIdx].q, ok: allCorrect });
+  if (allCorrect) spawnConfetti();
+  showSeqOverlay(allCorrect);
+}
+
+function showSeqOverlay(correct) {
+  const msgs = {
+    yes:[{emoji:'🌟',title:'כל הכבוד!',msg:'הסדר מושלם!'},{emoji:'🎉',title:'יפה מאוד!',msg:'בול!'},{emoji:'💙',title:'מעולה!',msg:'נכון לגמרי!'}],
+    no: [{emoji:'😊',title:'כמעט!',msg:'הסדר הנכון מסומן בירוק'},{emoji:'💪',title:'לא נורא!',msg:'ננסי שוב!'},{emoji:'🌈',title:'ממשיכות!',msg:'הבא בטוח!'}]
+  };
+  const list = correct ? msgs.yes : msgs.no;
+  const c = list[Math.floor(Math.random() * list.length)];
+  document.getElementById('feedback-emoji').textContent = c.emoji;
+  document.getElementById('feedback-title').textContent = c.title;
+  document.getElementById('feedback-msg').textContent   = c.msg;
+  const isLast = seqIdx >= SEQ_ROUNDS - 1;
+  document.getElementById('btn-next').textContent = isLast ? 'לסיכום! 🎊' : 'הבא ▶';
+  document.getElementById('btn-next').onclick = nextSeqRound;
+  document.getElementById('overlay').classList.add('active');
+}
+
+function nextSeqRound() {
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('confetti-wrap').innerHTML = '';
+  seqIdx++;
+  if (seqIdx >= SEQ_ROUNDS) showSeqEnd();
+  else loadSeqRound();
+}
+
+function showSeqEnd() {
+  showScreen('screen-end');
+  document.getElementById('score-display').textContent = `${seqScore} / ${SEQ_ROUNDS}`;
+  const pct = seqScore / SEQ_ROUNDS;
+  let trophy, title, msg;
+  if (pct === 1)       { trophy='🏆'; title='מושלמת!';   msg='כל הרצפים בסדר מושלם!'; }
+  else if (pct >= .75) { trophy='🌟'; title='כל הכבוד!'; msg='זיכרון מדהים!'; }
+  else if (pct >= .5)  { trophy='🌸'; title='יפה מאוד!'; msg='רוב הרצפים הצלחת!'; }
+  else                 { trophy='💛'; title='ממשיכים!';  msg='ננסי שוב יחד!'; }
+  document.getElementById('end-trophy').textContent = trophy;
+  document.getElementById('end-title').textContent  = title;
+  document.getElementById('score-msg').textContent  = msg;
+  const list = document.getElementById('summary-list');
+  list.innerHTML = '';
+  seqResults.forEach(r => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${r.title}</span><span class="result-icon">${r.ok ? '✅' : '❌'}</span>`;
+    list.appendChild(li);
+  });
+  document.getElementById('btn-play-again').onclick = () => startSeqGame(seqType);
+  if (pct >= .75) spawnConfetti();
+}
 
 // ════════════════════════════════════════════
 //  קונפטי
