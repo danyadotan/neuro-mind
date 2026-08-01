@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>נוירו-טאב 🎵</title>
+<meta name="theme-color" content="#1A5276">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="נוירו-טאב">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1155,6 +1161,9 @@ function spawnConfetti() {
     el.style.cssText = `left:${left}%;width:${size}px;height:${size}px;background:${color};animation-duration:${dur}s;animation-delay:${delay}s;border-radius:${Math.random()>.5?'50%':'2px'}`;
     wrap.appendChild(el);
   }
+}
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
 }
 </script>
 </body>
