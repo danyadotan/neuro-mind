@@ -1,7 +1,7 @@
 {
   "name": "נוירו-טאב",
   "short_name": "נוירו-טאב",
-  "description": "משחקי זיכרון מוזיקליים בעברית",
+  "description": "משחקי זיכרון בעברית",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#EEF4FF",
