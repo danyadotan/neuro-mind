@@ -1,4 +1,4 @@
-const CACHE = 'neuro-tab-v1';
+const CACHE = 'neuro-mind-v1';
 const FILES = ['./', './index.html', './icon.png', './manifest.json'];
 
 self.addEventListener('install', e => {
